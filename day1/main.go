@@ -24,13 +24,23 @@ func main() {
 		dataHashSet[l] = struct{}{}
 	}
 	f.Close()
+	// PART 1
 	// Iterate over hashset and look for condition
 	for l := range dataHashSet {
+		dataHashSet[l] = struct{}{}
 		if _, exists := dataHashSet[2020-l]; exists {
 			// If found print naswer and exit program
-			fmt.Println("Answer: ", l*(2020-l))
-			os.Exit(0)
+			fmt.Println("Answer (part 1): ", l*(2020-l))
+			break
 		}
-		dataHashSet[l] = struct{}{}
+	}
+	// PART 2
+	for l := range dataHashSet {
+		for m := range dataHashSet {
+			if _, exists := dataHashSet[2020-l-m]; exists {
+				fmt.Println("Answer (part 2): ", l*m*(2020-l-m))
+				os.Exit(0)
+			}
+		}
 	}
 }
