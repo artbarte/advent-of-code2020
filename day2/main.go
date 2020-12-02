@@ -10,26 +10,38 @@ import (
 
 var passRXP = regexp.MustCompile(`(\d+)-(\d+) (\D): (\D+)`)
 
-func passwordValidationFunc(s string) bool {
+func passwordValidationFunc(s string) (bool, bool) {
 	parsedPass := passRXP.FindStringSubmatch(s)
 	min, _ := strconv.Atoi(parsedPass[1])
 	max, _ := strconv.Atoi(parsedPass[2])
-	char := parsedPass[3]
+	char := byte(parsedPass[3][0])
 	password := parsedPass[4]
 
+	passedNew := false
+
+	if len(password) > max-1 {
+		// Xor logic opeartor ;P
+		x := password[min-1] == char
+		y := password[max-1] == char
+		if (x || y) && (x != y) {
+			passedNew = true
+		}
+	}
+
 	reqCharCount := 0
+
 	for _, c := range password {
-		if c == rune(char[0]) {
+		if c == rune(char) {
 			reqCharCount++
 			if reqCharCount > max {
-				return false
+				return false, passedNew
 			}
 		}
 	}
 	if reqCharCount >= min {
-		return true
+		return true, passedNew
 	}
-	return false
+	return false, passedNew
 }
 
 func main() {
@@ -40,15 +52,21 @@ func main() {
 		panic(err)
 	}
 
-	var valids int
+	var oldValids int
+	var newValids int
 
 	s := bufio.NewScanner(f)
 	for s.Scan() {
 		// Parse input to slice of string
-		if passwordValidationFunc(s.Text()) {
-			valids++
+		oldPassPolicy, newPassPolicy := passwordValidationFunc(s.Text())
+		if oldPassPolicy {
+			oldValids++
+		}
+		if newPassPolicy {
+			newValids++
 		}
 	}
 	f.Close()
-	fmt.Println("Answer: ", valids)
+	fmt.Println("Answer (part 1): ", oldValids)
+	fmt.Println("Answer (part 2): ", newValids)
 }
