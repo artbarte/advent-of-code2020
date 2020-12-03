@@ -45,5 +45,6 @@ func main() {
 	}
 	f.Close()
 
-	fmt.Println("Answer: ", countTrees(areaMap, 3, 1))
+	fmt.Println("Answer (part 1): ", countTrees(areaMap, 3, 1))
+	fmt.Println("Answer (part 2): ", countTrees(areaMap, 1, 1)*countTrees(areaMap, 3, 1)*countTrees(areaMap, 5, 1)*countTrees(areaMap, 7, 1)*countTrees(areaMap, 1, 2))
 }
